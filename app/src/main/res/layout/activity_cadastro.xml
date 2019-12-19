@@ -22,6 +22,7 @@
         app:layout_constraintVertical_bias="0.13">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editCadastroNome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/nome"
@@ -38,6 +39,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout4">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editCadastroEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email"
@@ -45,7 +47,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switchTipoUsuario"
         android:layout_width="46dp"
         android:layout_height="31dp"
         android:layout_marginTop="68dp"
@@ -61,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="176dp"
         android:background="@color/btnCadastro"
+        android:onClick="validarCadastroUsuario"
         android:text="Cadastrar"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayout4"
@@ -78,6 +81,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editCadastroSenha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/senha"
@@ -91,9 +95,9 @@
         android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp"
         android:text="Passageiro"
-        app:layout_constraintBottom_toBottomOf="@+id/switch1"
-        app:layout_constraintEnd_toStartOf="@+id/switch1"
-        app:layout_constraintTop_toTopOf="@+id/switch1" />
+        app:layout_constraintBottom_toBottomOf="@+id/switchTipoUsuario"
+        app:layout_constraintEnd_toStartOf="@+id/switchTipoUsuario"
+        app:layout_constraintTop_toTopOf="@+id/switchTipoUsuario" />
 
     <TextView
         android:id="@+id/textView2"
@@ -102,8 +106,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:text="Motorista"
-        app:layout_constraintBottom_toBottomOf="@+id/switch1"
-        app:layout_constraintStart_toEndOf="@+id/switch1"
-        app:layout_constraintTop_toTopOf="@+id/switch1" />
+        app:layout_constraintBottom_toBottomOf="@+id/switchTipoUsuario"
+        app:layout_constraintStart_toEndOf="@+id/switchTipoUsuario"
+        app:layout_constraintTop_toTopOf="@+id/switchTipoUsuario" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
