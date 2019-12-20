@@ -99,7 +99,7 @@ public class CadastroActivity extends AppCompatActivity {
             // Redireciona o usuário com base no seu tipo
             // Se o usuário for passageiro chama a activity maps
             // Se for motorista a activity requisições
-            if (verificaTipoUsuario() == "P") {
+            if (verificaTipoUsuario().equals("P")) {
               startActivity(new Intent(CadastroActivity.this, MapsActivity.class));
               finish();
 

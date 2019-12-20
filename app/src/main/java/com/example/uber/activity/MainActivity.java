@@ -2,6 +2,7 @@ package com.example.uber.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.uber.R;
+import com.example.uber.helper.UsuarioFirebase;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,5 +24,11 @@ public class MainActivity extends AppCompatActivity {
 
   public void abrirTelaCadastro(View view) {
     startActivity( new Intent(this, CadastroActivity.class));
+  }
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    UsuarioFirebase.redirecionaUsuarioLogado(MainActivity.this);
   }
 }
