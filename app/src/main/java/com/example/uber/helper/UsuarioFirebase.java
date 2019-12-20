@@ -6,7 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.uber.activity.MapsActivity;
+import com.example.uber.activity.PassageiroActivity;
 import com.example.uber.activity.RequisicoesActivity;
 import com.example.uber.config.ConfiguracaoFirebase;
 import com.example.uber.model.Usuario;
@@ -66,7 +66,7 @@ public class UsuarioFirebase {
             Intent i = new Intent(activity, RequisicoesActivity.class);
             activity.startActivity(i);
           } else {
-            Intent i = new Intent(activity, MapsActivity.class);
+            Intent i = new Intent(activity, PassageiroActivity.class);
             activity.startActivity(i);
           }
         }
