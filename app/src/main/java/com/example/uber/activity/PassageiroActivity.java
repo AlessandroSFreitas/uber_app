@@ -23,8 +23,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -60,6 +58,7 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
     setContentView(R.layout.activity_passageiro);
 
     inicializarComponentes();
+    recuperarLocalizacaoUsuario();
   }
 
   @Override
@@ -189,10 +188,18 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
       locationManager.requestLocationUpdates(
               LocationManager.GPS_PROVIDER,
-              10000,
+              5000,
               10,
               locationListener
       );
+    }
+  }
+
+  public void forcarLocalizacao(View view) {
+     if (localPassageiro != null) {
+      LatLng cur_Latlng = new LatLng(localPassageiro.latitude, localPassageiro.longitude);
+      mMap.moveCamera(CameraUpdateFactory.newLatLng(cur_Latlng));
+      mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
     }
   }
 
