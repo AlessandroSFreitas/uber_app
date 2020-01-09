@@ -163,7 +163,7 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
                 new MarkerOptions()
                         .position(localPassageiro)
                         .title("Meu local")
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin)));
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.circulo_azul)));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(localPassageiro, 17));
       }

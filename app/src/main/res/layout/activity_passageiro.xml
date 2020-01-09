@@ -74,14 +74,25 @@
         android:text="Chamar Uber"
         android:theme="@style/botaoPadrao" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabForcarLocalizacao"
+    <LinearLayout
+        android:id="@+id/especoForcarLocalizacao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:onClick="forcarLocalizacao"
-        app:srcCompat="@drawable/gps" />
+        android:layout_gravity="right"
+        android:layout_marginTop="500dp"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabForcarLocalizacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:onClick="forcarLocalizacao"
+            android:scrollbarDefaultDelayBeforeFade="400"
+            app:maxImageSize="30dp"
+            app:srcCompat="@drawable/gps" />
+    </LinearLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
