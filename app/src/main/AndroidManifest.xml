@@ -17,6 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".activity.CorridaActivity"
+            android:label="@string/title_activity_corrida"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.RequisicoesActivity"></activity>
+        <activity
             android:name=".activity.PassageiroActivity"
             android:label="@string/title_activity_passageiro"
             android:theme="@style/AppTheme.NoActionBar" />

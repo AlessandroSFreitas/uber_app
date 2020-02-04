@@ -120,7 +120,7 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
   public void onMapReady(GoogleMap googleMap) {
     mMap = googleMap;
 
-    //Recuperar a localização do usuário
+    // Recuperar a localização do usuário
     recuperarLocalizacaoUsuario();
   }
 
