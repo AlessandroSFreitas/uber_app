@@ -2,6 +2,7 @@ package com.example.uber.activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -31,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.uber.R;
 import com.google.firebase.database.DataSnapshot;
@@ -53,6 +55,8 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
   private Button buttonAceitarCorrida;
   private Marker marcadorMotorista;
   private Marker marcadorPassageiro;
+  private String statusRequisicao;
+  private Boolean requisicaoAtiva;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +69,12 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     if (getIntent().getExtras().containsKey("idRequisicao") && getIntent().getExtras().containsKey("motorista")) {
       Bundle extras = getIntent().getExtras();
       motorista = (Usuario) extras.getSerializable("motorista");
+      localMotorista = new LatLng(
+        Double.parseDouble(motorista.getLatitude()),
+        Double.parseDouble(motorista.getLongitude())
+      );
       idRequisicao = extras.getString("idRequisicao");
+      requisicaoAtiva = extras.getBoolean("requisicaoAtiva");
 
       vericaStatusRequisicao();
     }
@@ -97,18 +106,16 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
       public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
         // Recuperar requisição
         requisicao = dataSnapshot.getValue(Requisicao.class);
-        passageiro = requisicao.getPassageiro();
-        localPassageiro = new LatLng(
-            Double.parseDouble(passageiro.getLatitude()),
-            Double.parseDouble(passageiro.getLongitude())
-        );
-        switch (requisicao.getStatus()) {
-          case Requisicao.STATUS_AGUARDANDO :
-            requisicaoAguardando();
-            break;
-          case Requisicao.STATUS_A_CAMINHO :
-            requisicaoACaminho();
-            break;
+
+        if (requisicao != null) {
+          passageiro = requisicao.getPassageiro();
+          localPassageiro = new LatLng(
+              Double.parseDouble(passageiro.getLatitude()),
+              Double.parseDouble(passageiro.getLongitude())
+          );
+
+          statusRequisicao = requisicao.getStatus();
+          alteraInterfaceStatusRequisicao(statusRequisicao);
         }
       }
 
@@ -117,6 +124,17 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
       }
     });
+  }
+
+  private void alteraInterfaceStatusRequisicao(String status) {
+    switch (status) {
+      case Requisicao.STATUS_AGUARDANDO :
+        requisicaoAguardando();
+        break;
+      case Requisicao.STATUS_A_CAMINHO :
+        requisicaoACaminho();
+        break;
+    }
   }
 
   private void requisicaoAguardando() {
@@ -172,7 +190,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
     int largura = getResources().getDisplayMetrics().widthPixels;
     int altura = getResources().getDisplayMetrics().heightPixels;
-    int espacoInterno = (int) (largura * 0.40);
+    int espacoInterno = (int) (largura * 0.30);
 
     mMap.moveCamera(
         CameraUpdateFactory.newLatLngBounds(bounds, largura, altura, espacoInterno)
@@ -190,14 +208,15 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
         localMotorista = new LatLng(latitute, longitude);
 
-        mMap.clear();
-        mMap.addMarker(
-            new MarkerOptions()
-                .position(localMotorista)
-                .title("Meu local")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.carro)));
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(localMotorista, 15));
+        alteraInterfaceStatusRequisicao(statusRequisicao);
+//        mMap.clear();
+//        mMap.addMarker(
+//            new MarkerOptions()
+//                .position(localMotorista)
+//                .title("Meu local")
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.carro)));
+//
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(localMotorista, 15));
       }
 
       @Override
@@ -243,5 +262,17 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
         .findFragmentById(R.id.map);
     mapFragment.getMapAsync(this);
+  }
+
+  @Override
+  public boolean onSupportNavigateUp() {
+    if (requisicaoAtiva) {
+      Toast.makeText(CorridaActivity.this, "Necessário encerrar a requisição atual",
+          Toast.LENGTH_SHORT).show();
+    } else {
+      Intent i = new Intent(CorridaActivity.this, RequisicoesActivity.class);
+      startActivity(i);
+    }
+    return false;
   }
 }
