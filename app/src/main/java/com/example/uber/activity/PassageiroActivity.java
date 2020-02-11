@@ -55,6 +55,15 @@ import java.util.Locale;
 
 public class PassageiroActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+  /*
+  * Lat/Long destino: -30.0846, -51.2464 (Avenida Diário de Notícias, 300)
+  * Lat/Long passageiro: -30.0857, -51.2232
+  * Lat/long motorista (a caminho):
+  *   inicial: -30.0684, -51.1799
+  *   intermediaria: -30.0785, -51.2087
+  *   final: -30.0854, -51.2227
+  * */
+
   // Componentes
   private EditText editDestino;
   private LinearLayout linearLayoutDestino;
@@ -222,6 +231,9 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
         double longitude = location.getLongitude();
 
         localPassageiro = new LatLng(latitute, longitude);
+
+        // Atualizar Geofire
+        UsuarioFirebase.atualizarDadosLocalizacao(latitute, longitude);
 
         mMap.clear();
         mMap.addMarker(

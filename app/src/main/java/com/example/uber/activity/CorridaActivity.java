@@ -60,6 +60,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_corrida);
 
@@ -78,17 +79,21 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
       vericaStatusRequisicao();
     }
+
   }
 
   @Override
   public void onMapReady(GoogleMap googleMap) {
+
     mMap = googleMap;
 
     // Recuperar a localização do usuário
     recuperarLocalizacaoUsuario();
+
   }
 
   public void aceitarCorrida(View view) {
+
     // Configurar requisição
     requisicao = new Requisicao();
     requisicao.setId(idRequisicao);
@@ -96,9 +101,11 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     requisicao.setStatus(Requisicao.STATUS_A_CAMINHO);
 
     requisicao.atualizar();
+
   }
 
   private void vericaStatusRequisicao() {
+
     DatabaseReference requisicoes = firebaseRef.child("requisicoes")
         .child(idRequisicao);
     requisicoes.addValueEventListener(new ValueEventListener() {
@@ -124,9 +131,11 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
       }
     });
+
   }
 
   private void alteraInterfaceStatusRequisicao(String status) {
+
     switch (status) {
       case Requisicao.STATUS_AGUARDANDO :
         requisicaoAguardando();
@@ -135,13 +144,24 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
         requisicaoACaminho();
         break;
     }
+
   }
 
   private void requisicaoAguardando() {
+
     buttonAceitarCorrida.setText("Aceitar corrida");
+
+    // Exibe marcador do motorista
+    adicionaMarcadorMotorista(localMotorista, motorista.getNome());
+
+    mMap.moveCamera(
+        CameraUpdateFactory.newLatLngZoom(localMotorista, 20)
+    );
+
   }
 
   private void requisicaoACaminho() {
+
     buttonAceitarCorrida.setText("A caminho do passageiro");
 
     // Exibe marcador do motorista
@@ -152,9 +172,11 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
     // Centralizar dois marcadores
     centralizarDoisMarcadores(marcadorMotorista, marcadorPassageiro);
+
   }
 
   private void adicionaMarcadorMotorista(LatLng localizacao, String titulo) {
+
     if (marcadorMotorista != null) {
       marcadorMotorista.remove();
     }
@@ -165,9 +187,11 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
             .title(titulo)
             .icon(BitmapDescriptorFactory.fromResource(R.drawable.carro))
     );
+
   }
 
   private void adicionaMarcadorPassageiro(LatLng localizacao, String titulo) {
+
     if (marcadorPassageiro != null) {
       marcadorPassageiro.remove();
     }
@@ -178,9 +202,11 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
             .title(titulo)
             .icon(BitmapDescriptorFactory.fromResource(R.drawable.circulo_azul))
     );
+
   }
 
   private void centralizarDoisMarcadores(Marker marcador1, Marker marcador2) {
+
     LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
     builder.include(marcador1.getPosition());
@@ -195,9 +221,11 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     mMap.moveCamera(
         CameraUpdateFactory.newLatLngBounds(bounds, largura, altura, espacoInterno)
     );
+
   }
 
   private void recuperarLocalizacaoUsuario() {
+
     locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     locationListener = new LocationListener() {
       @Override
@@ -208,15 +236,10 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
         localMotorista = new LatLng(latitute, longitude);
 
+        // Atualizar Geofire
+        UsuarioFirebase.atualizarDadosLocalizacao(latitute, longitude);
+
         alteraInterfaceStatusRequisicao(statusRequisicao);
-//        mMap.clear();
-//        mMap.addMarker(
-//            new MarkerOptions()
-//                .position(localMotorista)
-//                .title("Meu local")
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.carro)));
-//
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(localMotorista, 15));
       }
 
       @Override
@@ -244,9 +267,11 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
           locationListener
       );
     }
+
   }
 
   private void inicializarComponentes() {
+
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
@@ -262,10 +287,12 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
         .findFragmentById(R.id.map);
     mapFragment.getMapAsync(this);
+
   }
 
   @Override
   public boolean onSupportNavigateUp() {
+
     if (requisicaoAtiva) {
       Toast.makeText(CorridaActivity.this, "Necessário encerrar a requisição atual",
           Toast.LENGTH_SHORT).show();
@@ -274,5 +301,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
       startActivity(i);
     }
     return false;
+
   }
+
 }

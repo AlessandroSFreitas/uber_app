@@ -206,6 +206,7 @@ public class RequisicoesActivity extends AppCompatActivity {
   }
 
   private void recuperarLocalizacaoUsuario() {
+
     locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     locationListener = new LocationListener() {
       @Override
@@ -213,6 +214,12 @@ public class RequisicoesActivity extends AppCompatActivity {
         // Recuperar latitude e longitude
         String latitute = String.valueOf(location.getLatitude());
         String longitude = String.valueOf(location.getLongitude());
+
+        // Atualizar Geofire
+        UsuarioFirebase.atualizarDadosLocalizacao(
+            location.getLatitude(),
+            location.getLongitude()
+        );
 
         if (!latitute.isEmpty() && !longitude.isEmpty()) {
           motorista.setLatitude(latitute);
