@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.uber.config.ConfiguracaoFirebase;
@@ -30,14 +31,12 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -65,6 +64,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
   private Marker marcadorPassageiro;
   private String statusRequisicao;
   private Boolean requisicaoAtiva;
+  private FloatingActionButton fabRota;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +171,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
   private void requisicaoACaminho() {
 
     buttonAceitarCorrida.setText("A caminho do passageiro");
+    fabRota.setVisibility(View.VISIBLE);
 
     // Exibe marcador do motorista
     adicionaMarcadorMotorista(localMotorista, motorista.getNome());
@@ -357,6 +358,40 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
         .findFragmentById(R.id.map);
     mapFragment.getMapAsync(this);
+
+    // Adicionar evento de clique no fabRota
+    fabRota = findViewById(R.id.fabRota);
+    fabRota.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        String status = statusRequisicao;
+        if (status != null && !status.isEmpty()) {
+
+          String lat = "";
+          String lon = "";
+
+          switch (status) {
+            case Requisicao.STATUS_A_CAMINHO :
+              lat = String.valueOf(localPassageiro.latitude);
+              lon = String.valueOf(localPassageiro.longitude);
+              break;
+            case Requisicao.STATUS_VIAGEM :
+
+              break;
+          }
+
+          // Abrir rota
+          String latLong = lat + "," + lon;
+          Uri uri = Uri.parse("google.navigation:q="+latLong+"&mode=d");
+          Intent i = new Intent(Intent.ACTION_VIEW, uri);
+          i.setPackage("com.google.android.apps.maps");
+          startActivity(i);
+
+        }
+
+      }
+    });
 
   }
 
