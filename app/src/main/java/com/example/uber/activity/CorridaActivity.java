@@ -190,7 +190,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     centralizarDoisMarcadores(marcadorMotorista, marcadorPassageiro);
 
     // Iniciar monitoramento do motorista/passageiro
-    iniciarMonitoramentoCorrida(passageiro, motorista);
+    iniciarMonitoramento(motorista, localPassageiro, Requisicao.STATUS_VIAGEM);
 
   }
 
@@ -213,9 +213,12 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     // Centraliza marcadores motorista / destino
     centralizarDoisMarcadores(marcadorMotorista, marcadorDestino);
 
+    // Iniciar monitoramento do motorista/passageiro
+    iniciarMonitoramento(motorista, localDestino, Requisicao.STATUS_FINALIZADA);
+
   }
 
-  private void iniciarMonitoramentoCorrida(Usuario p, Usuario m) {
+  private void iniciarMonitoramento(final Usuario uOrigem, LatLng localDestino, final String status) {
 
     // Inicializar Geofire
     DatabaseReference localUsuario = ConfiguracaoFirebase.getFirebaseDatabase()
@@ -225,24 +228,25 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     // Adicionar círculo no passageiro
     final Circle circulo = mMap.addCircle(
         new CircleOptions()
-        .center(localPassageiro)
+        .center(localDestino)
         .radius(50) // em metros
         .fillColor(Color.argb(90, 255, 153, 0))
         .strokeColor(Color.argb(190, 255, 153, 0))
     );
 
     final GeoQuery geoQuery = geoFire.queryAtLocation(
-        new GeoLocation(localPassageiro.latitude, localPassageiro.longitude),
+        new GeoLocation(localDestino.latitude, localDestino.longitude),
         0.05 // (0.05 km == 50 metros)
     );
 
     geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
       @Override
       public void onKeyEntered(String key, GeoLocation location) {
-        if (key.equals(motorista.getId())) {
+        if (key.equals(uOrigem.getId())) {
           //Log.d("onKeyEntered", "onKeyEntered: motorista esta dentro da area");
+
           // Alterar o status da requisição
-          requisicao.setStatus(Requisicao.STATUS_VIAGEM);
+          requisicao.setStatus(status);
           requisicao.atualizarStatus();
 
           // Remover listeners
