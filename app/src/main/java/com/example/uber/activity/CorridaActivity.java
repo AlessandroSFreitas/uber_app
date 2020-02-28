@@ -158,6 +158,9 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
       case Requisicao.STATUS_VIAGEM :
         requisicaoViagem();
         break;
+      case Requisicao.STATUS_FINALIZADA :
+        requisicaoFinalizada();
+        break;
     }
 
   }
@@ -169,9 +172,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     // Exibe marcador do motorista
     adicionaMarcadorMotorista(localMotorista, motorista.getNome());
 
-    mMap.moveCamera(
-        CameraUpdateFactory.newLatLngZoom(localMotorista, 20)
-    );
+    centralizarMarcador(localMotorista);
 
   }
 
@@ -215,6 +216,39 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
     // Iniciar monitoramento do motorista/passageiro
     iniciarMonitoramento(motorista, localDestino, Requisicao.STATUS_FINALIZADA);
+
+  }
+
+  private void requisicaoFinalizada() {
+
+    fabRota.setVisibility(View.GONE);
+
+    if (marcadorMotorista != null) {
+      marcadorMotorista.remove();
+    }
+
+    if (marcadorDestino != null) {
+      marcadorDestino.remove();
+    }
+
+    // Exibe marcador de destino
+    LatLng localDestino = new LatLng(
+            Double.parseDouble(destino.getLatitude()),
+            Double.parseDouble(destino.getLongitude())
+    );
+
+    adicionaMarcadorDestino(localDestino, "Destino");
+
+    centralizarMarcador(localDestino);
+
+    buttonAceitarCorrida.setText("Encerrar corrida - R$ 20,00");
+  }
+
+  private void centralizarMarcador(LatLng local) {
+
+    mMap.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(local, 20)
+    );
 
   }
 
