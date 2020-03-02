@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.uber.config.ConfiguracaoFirebase;
+import com.example.uber.helper.Local;
 import com.example.uber.helper.UsuarioFirebase;
 import com.example.uber.model.Destino;
 import com.example.uber.model.Requisicao;
@@ -47,6 +48,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.DecimalFormat;
 
 public class CorridaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -222,6 +225,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
   private void requisicaoFinalizada() {
 
     fabRota.setVisibility(View.GONE);
+    requisicaoAtiva = false;
 
     if (marcadorMotorista != null) {
       marcadorMotorista.remove();
@@ -241,7 +245,14 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
     centralizarMarcador(localDestino);
 
-    buttonAceitarCorrida.setText("Encerrar corrida - R$ 20,00");
+    // Calcular distancia
+    float distancia = Local.cacularDistancia(localPassageiro, localDestino);
+    float valor = distancia * 4;
+    DecimalFormat valor_final = new DecimalFormat("0.00");
+    String resultado = valor_final.format(valor);
+
+    buttonAceitarCorrida.setText("Encerrar corrida - R$ " + resultado);
+
   }
 
   private void centralizarMarcador(LatLng local) {
