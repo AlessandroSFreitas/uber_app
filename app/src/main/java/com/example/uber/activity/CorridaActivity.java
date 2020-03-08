@@ -85,10 +85,12 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     if (getIntent().getExtras().containsKey("idRequisicao") && getIntent().getExtras().containsKey("motorista")) {
       Bundle extras = getIntent().getExtras();
       motorista = (Usuario) extras.getSerializable("motorista");
+
       localMotorista = new LatLng(
         Double.parseDouble(motorista.getLatitude()),
         Double.parseDouble(motorista.getLongitude())
       );
+
       idRequisicao = extras.getString("idRequisicao");
       requisicaoAtiva = extras.getBoolean("requisicaoAtiva");
 
@@ -130,7 +132,9 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
         requisicao = dataSnapshot.getValue(Requisicao.class);
 
         if (requisicao != null) {
+
           passageiro = requisicao.getPassageiro();
+
           localPassageiro = new LatLng(
               Double.parseDouble(passageiro.getLatitude()),
               Double.parseDouble(passageiro.getLongitude())
@@ -139,6 +143,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
           statusRequisicao = requisicao.getStatus();
           destino = requisicao.getDestino();
           alteraInterfaceStatusRequisicao(statusRequisicao);
+
         }
       }
 
@@ -411,6 +416,13 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
         // Atualizar Geofire
         UsuarioFirebase.atualizarDadosLocalizacao(latitute, longitude);
+
+        // Atualizar localização motorista no Firebase
+        motorista.setLatitude(String.valueOf(latitute));
+        motorista.setLongitude(String.valueOf(longitude));
+        requisicao.setMotorista(motorista);
+
+        requisicao.atualizarLocalizacaoMotorista();
 
         alteraInterfaceStatusRequisicao(statusRequisicao);
       }
