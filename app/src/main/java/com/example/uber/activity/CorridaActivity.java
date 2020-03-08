@@ -64,6 +64,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
   private Requisicao requisicao;
   private DatabaseReference firebaseRef;
   private Button buttonAceitarCorrida;
+  private Button buttonFinalizarCorrida;
   private Marker marcadorMotorista;
   private Marker marcadorPassageiro;
   private Marker marcadorDestino;
@@ -170,6 +171,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
   private void requisicaoAguardando() {
 
+    buttonFinalizarCorrida.setVisibility(View.GONE);
     buttonAceitarCorrida.setText("Aceitar corrida");
 
     // Exibe marcador do motorista
@@ -181,6 +183,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
   private void requisicaoACaminho() {
 
+    buttonFinalizarCorrida.setVisibility(View.GONE);
     buttonAceitarCorrida.setText("A caminho do passageiro");
     fabRota.setVisibility(View.VISIBLE);
 
@@ -202,6 +205,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
     // Alterar a interface
     fabRota.setVisibility(View.VISIBLE);
+    buttonFinalizarCorrida.setVisibility(View.GONE);
     buttonAceitarCorrida.setText("A caminho do destino");
 
     // Exibe marcador do motorista
@@ -225,6 +229,8 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
   private void requisicaoFinalizada() {
 
     fabRota.setVisibility(View.GONE);
+    buttonAceitarCorrida.setVisibility(View.GONE);
+
     requisicaoAtiva = false;
 
     if (marcadorMotorista != null) {
@@ -251,7 +257,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     DecimalFormat valor_final = new DecimalFormat("0.00");
     String resultado = valor_final.format(valor);
 
-    buttonAceitarCorrida.setText("Encerrar corrida - R$ " + resultado);
+    buttonFinalizarCorrida.setText("Encerrar corrida - R$ " + resultado);
 
   }
 
@@ -446,6 +452,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     getSupportActionBar().setTitle("Iniciar corrida");
 
     buttonAceitarCorrida = findViewById(R.id.buttonAceitarCorrida);
+    buttonFinalizarCorrida = findViewById(R.id.buttonFinalizarCorrida);
 
     //Configuracoes iniciais
     firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
