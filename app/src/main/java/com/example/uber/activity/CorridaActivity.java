@@ -266,6 +266,15 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
 
   }
 
+  public void finalizarCorrida(View view) {
+
+    requisicao.setStatus(Requisicao.STATUS_PAGO);
+    requisicao.atualizarStatus();
+
+    finish();
+
+  }
+
   private void centralizarMarcador(LatLng local) {
 
     mMap.moveCamera(

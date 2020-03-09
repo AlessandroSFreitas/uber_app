@@ -3,6 +3,7 @@ package com.example.uber.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -12,6 +13,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import com.example.uber.config.ConfiguracaoFirebase;
+import com.example.uber.helper.Local;
 import com.example.uber.helper.UsuarioFirebase;
 import com.example.uber.model.Destino;
 import com.example.uber.model.Requisicao;
@@ -51,6 +53,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -113,25 +116,31 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
           requisicao = lista.get(0);
 
           if (requisicao != null) {
-            passageiro = requisicao.getPassageiro();
-            localPassageiro = new LatLng(
-                Double.parseDouble(passageiro.getLatitude()),
-                Double.parseDouble(passageiro.getLongitude())
-            );
 
-            statusRequisicao = requisicao.getStatus();
-            destino = requisicao.getDestino();
+            if (!requisicao.getStatus().equals(Requisicao.STATUS_PAGO)) {
 
-            if (requisicao.getMotorista() != null) {
-              motorista = requisicao.getMotorista();
-
-              localMotorista = new LatLng(
-                Double.parseDouble(motorista.getLatitude()),
-                Double.parseDouble(motorista.getLongitude())
+              passageiro = requisicao.getPassageiro();
+              localPassageiro = new LatLng(
+                      Double.parseDouble(passageiro.getLatitude()),
+                      Double.parseDouble(passageiro.getLongitude())
               );
+
+              statusRequisicao = requisicao.getStatus();
+              destino = requisicao.getDestino();
+
+              if (requisicao.getMotorista() != null) {
+                motorista = requisicao.getMotorista();
+
+                localMotorista = new LatLng(
+                        Double.parseDouble(motorista.getLatitude()),
+                        Double.parseDouble(motorista.getLongitude())
+                );
+              }
+
+              alteraInterfaceStatusRequisicao(statusRequisicao);
+
             }
 
-            alteraInterfaceStatusRequisicao(statusRequisicao);
           }
         }
       }
@@ -146,19 +155,25 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
 
   private void alteraInterfaceStatusRequisicao(String status) {
 
-    switch (requisicao.getStatus()) {
-      case Requisicao.STATUS_AGUARDANDO :
-        requisicaoAguardando();
-        break;
-      case Requisicao.STATUS_A_CAMINHO :
-        requisicaoACaminho();
-        break;
-      case Requisicao.STATUS_VIAGEM :
-        requisicaoViagem();
-        break;
-      case Requisicao.STATUS_FINALIZADA :
-        requisicaoFinalizada();
-        break;
+    if (status != null && !status.isEmpty()) {
+      switch (status) {
+        case Requisicao.STATUS_AGUARDANDO :
+          requisicaoAguardando();
+          break;
+        case Requisicao.STATUS_A_CAMINHO :
+          requisicaoACaminho();
+          break;
+        case Requisicao.STATUS_VIAGEM :
+          requisicaoViagem();
+          break;
+        case Requisicao.STATUS_FINALIZADA :
+          requisicaoFinalizada();
+          break;
+      }
+    } else {
+      // Adiciona marcador passageiro
+      adicionaMarcadorPassageiro(localPassageiro, "Seu local");
+      centralizarMarcador(localPassageiro);
     }
 
   }
@@ -195,13 +210,64 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
 
   private void requisicaoViagem() {
 
+    linearLayoutDestino.setVisibility(View.GONE);
+    fabForcarLocalizacao.setVisibility(View.GONE);
+    buttonChamarUber.setText("A caminho do destino");
 
+    // Adiciona marcador motorista
+    adicionaMarcadorMotorista(localMotorista, motorista.getNome());
+
+    // Adiciona marcador destino
+    LatLng localDestino = new LatLng(
+            Double.parseDouble(destino.getLatitude()),
+            Double.parseDouble(destino.getLongitude())
+    );
+    adicionaMarcadorDestino(localDestino, destino.getRua());
+
+    // Centralizar marcadores motorista e destino
+    centralizarDoisMarcadores(marcadorMotorista, marcadorDestino);
 
   }
 
   private void requisicaoFinalizada() {
 
+    linearLayoutDestino.setVisibility(View.GONE);
+    fabForcarLocalizacao.setVisibility(View.GONE);
+    buttonChamarUber.setText("Corrida finalizada");
 
+    // Adiciona marcador destino
+    LatLng localDestino = new LatLng(
+            Double.parseDouble(destino.getLatitude()),
+            Double.parseDouble(destino.getLongitude())
+    );
+    adicionaMarcadorDestino(localDestino, destino.getRua());
+
+    centralizarMarcador(localDestino);
+
+    // Calcular distancia
+    float distancia = Local.cacularDistancia(localPassageiro, localDestino);
+    float valor = distancia * 4;
+    DecimalFormat valor_final = new DecimalFormat("0.00");
+    String resultado = valor_final.format(valor);
+
+//    buttonChamarUber.setText("Encerrar corrida - R$ " + resultado);
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(this)
+            .setTitle("Viagem finalizada")
+            .setMessage("Preço da viagem: R$ " + resultado)
+            .setCancelable(false)
+            .setNegativeButton("ok", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                finish();
+
+                startActivity(new Intent(getIntent()));
+              }
+            });
+
+    AlertDialog dialog = builder.create();
+
+    dialog.show();
 
   }
 
@@ -231,6 +297,25 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
             .position(localizacao)
             .title(titulo)
             .icon(BitmapDescriptorFactory.fromResource(R.drawable.carro))
+    );
+
+  }
+
+  private void adicionaMarcadorDestino(LatLng localizacao, String titulo) {
+
+    if (marcadorPassageiro != null) {
+      marcadorPassageiro.remove();
+    }
+
+    if (marcadorDestino != null) {
+      marcadorDestino.remove();
+    }
+
+    marcadorDestino = mMap.addMarker(
+            new MarkerOptions()
+                    .position(localizacao)
+                    .title(titulo)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.destino))
     );
 
   }
@@ -372,14 +457,36 @@ public class PassageiroActivity extends AppCompatActivity implements OnMapReadyC
         // Atualizar Geofire
         UsuarioFirebase.atualizarDadosLocalizacao(latitute, longitude);
 
-        mMap.clear();
-        mMap.addMarker(
-                new MarkerOptions()
-                        .position(localPassageiro)
-                        .title("Meu local")
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.circulo_azul)));
+        // Altera interface de acordo com o status
+        alteraInterfaceStatusRequisicao(statusRequisicao);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(localPassageiro, 15));
+        if (statusRequisicao != null && !statusRequisicao.isEmpty()) {
+          if (statusRequisicao.equals(Requisicao.STATUS_VIAGEM)
+                  || statusRequisicao.equals(Requisicao.STATUS_FINALIZADA)) {
+            locationManager.removeUpdates(locationListener);
+          } else {
+
+            //Solicitar atualizações de localização
+            if (ActivityCompat.checkSelfPermission(PassageiroActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+              locationManager.requestLocationUpdates(
+                      LocationManager.GPS_PROVIDER,
+                      5000,
+                      10,
+                      locationListener
+              );
+            }
+
+          }
+        }
+
+//        mMap.clear();
+//        mMap.addMarker(
+//                new MarkerOptions()
+//                        .position(localPassageiro)
+//                        .title("Meu local")
+//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.circulo_azul)));
+//
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(localPassageiro, 15));
       }
 
       @Override

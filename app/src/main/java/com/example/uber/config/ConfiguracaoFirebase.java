@@ -11,17 +11,24 @@ public class ConfiguracaoFirebase {
 
   //Retorna a instancia do FirebaseDatabase
   public static DatabaseReference getFirebaseDatabase() {
+
     if (database == null) {
       database = FirebaseDatabase.getInstance().getReference();
     }
+
     return database;
+
   }
 
   //Retorna a instancia do FirebaseAuth
   public static FirebaseAuth getFirebaseAutenticacao() {
+
     if (auth == null) {
       auth = FirebaseAuth.getInstance();
     }
+
     return auth;
+
   }
+
 }
