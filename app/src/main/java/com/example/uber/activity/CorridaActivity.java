@@ -170,6 +170,9 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
       case Requisicao.STATUS_FINALIZADA :
         requisicaoFinalizada();
         break;
+      case Requisicao.STATUS_CANCELADA :
+        requisicaoCancelada();
+        break;
     }
 
   }
@@ -263,6 +266,14 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     String resultado = valor_final.format(valor);
 
     buttonFinalizarCorrida.setText("Encerrar corrida - R$ " + resultado);
+
+  }
+
+  private void requisicaoCancelada() {
+
+    Toast.makeText(this, "Requisição foi cancelada pelo passageiro", Toast.LENGTH_SHORT).show();
+
+    startActivity(new Intent(CorridaActivity.this, RequisicoesActivity.class));
 
   }
 

@@ -18,6 +18,7 @@ public class Requisicao {
   public static final String STATUS_VIAGEM = "viagem";
   public static final String STATUS_FINALIZADA = "finalizada";
   public static final String STATUS_PAGO = "pago";
+  public static final String STATUS_CANCELADA = "cancelada";
 
   public Requisicao() {
   }
