@@ -283,6 +283,7 @@ public class CorridaActivity extends AppCompatActivity implements OnMapReadyCall
     requisicao.atualizarStatus();
 
     finish();
+    startActivity(new Intent(CorridaActivity.this, RequisicoesActivity.class));
 
   }
 

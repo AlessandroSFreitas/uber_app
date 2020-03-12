@@ -5,15 +5,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.uber.R;
+import com.example.uber.config.ConfiguracaoFirebase;
 import com.example.uber.helper.Local;
+import com.example.uber.helper.UsuarioFirebase;
 import com.example.uber.model.Requisicao;
 import com.example.uber.model.Usuario;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -50,15 +59,23 @@ public class RequisicoesAdapter extends RecyclerView.Adapter<RequisicoesAdapter.
                     Double.parseDouble(passageiro.getLongitude())
             );
 
-            LatLng localMotorista = new LatLng(
-                    Double.parseDouble(motorista.getLatitude()),
-                    Double.parseDouble(motorista.getLongitude())
-            );
+            if (motorista.getLatitude() == null && motorista.getLongitude() == null) {
 
-            float distancia = Local.cacularDistancia(localPassageiro, localMotorista);
-            String distanciaFormatada = Local.formatarDistancia(distancia);
+                holder.distancia.setText("Calculando distancia");
 
-            holder.distancia.setText(distanciaFormatada + " - aproximadamente");
+            } else {
+
+                LatLng localMotorista = new LatLng(
+                        Double.parseDouble(motorista.getLatitude()),
+                        Double.parseDouble(motorista.getLongitude())
+                );
+
+                float distancia = Local.cacularDistancia(localPassageiro, localMotorista);
+                String distanciaFormatada = Local.formatarDistancia(distancia);
+
+                holder.distancia.setText(distanciaFormatada + " - aproximadamente");
+
+            }
 
         }
 
