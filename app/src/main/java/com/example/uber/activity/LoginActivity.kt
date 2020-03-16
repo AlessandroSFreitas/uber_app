@@ -72,6 +72,7 @@ class LoginActivity : AppCompatActivity() {
 
         autenticacao.signInWithEmailAndPassword(usuario.email, usuario.senha)
                 .addOnCompleteListener { task: Task<AuthResult> ->
+
                     if ( task.isSuccessful ) {
 
                         //Verificar o tipo de usuário logado
@@ -105,6 +106,7 @@ class LoginActivity : AppCompatActivity() {
                                 excecao, Toast.LENGTH_SHORT).show()
 
                     }
+
                 }
 
     }
