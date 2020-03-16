@@ -52,7 +52,7 @@
             android:label="@string/titulo_cadastro"
             android:parentActivityName=".activity.MainActivity" />
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".activity.LoginActivityKt"
             android:label="@string/titulo_login"
             android:parentActivityName=".activity.MainActivity" />
     </application>

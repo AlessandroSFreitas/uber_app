@@ -18,13 +18,14 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-  private FirebaseAuth autenticacao;
+//  private FirebaseAuth autenticacao;
   private String[] permissoes = new String[] {
           Manifest.permission.ACCESS_FINE_LOCATION
   };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
@@ -32,13 +33,11 @@ public class MainActivity extends AppCompatActivity {
 
     //Validar as permissões
     Permissoes.validarPermissoes(permissoes, this, 1);
-    /*
-    autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    autenticacao.signOut(); */
+
   }
 
   public void abrirTelaLogin(View view) {
-    startActivity( new Intent(this, LoginActivity.class));
+    startActivity( new Intent(this, LoginActivityKt.class));
   }
 
   public void abrirTelaCadastro(View view) {
@@ -47,8 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
   @Override
   protected void onStart() {
+
     super.onStart();
     UsuarioFirebase.redirecionaUsuarioLogado(MainActivity.this);
+
   }
 
   @Override

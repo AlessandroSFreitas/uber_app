@@ -90,6 +90,7 @@ public class UsuarioFirebase {
         }
       });
     }
+
   }
 
   public static void atualizarDadosLocalizacao(double lat, double lon) {
