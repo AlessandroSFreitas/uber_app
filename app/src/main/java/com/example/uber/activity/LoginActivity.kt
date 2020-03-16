@@ -1,7 +1,6 @@
 package com.example.uber.activity
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 
-class LoginActivityKt : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private lateinit var campoEmail: TextInputEditText
     private lateinit var campoSenha: TextInputEditText
@@ -51,7 +50,7 @@ class LoginActivityKt : AppCompatActivity() {
 
             } else {
 
-                Toast.makeText(this@LoginActivityKt,
+                Toast.makeText(this@LoginActivity,
                         "Preencha a senha!",
                         Toast.LENGTH_SHORT).show()
 
@@ -59,7 +58,7 @@ class LoginActivityKt : AppCompatActivity() {
 
         } else {
 
-            Toast.makeText(this@LoginActivityKt,
+            Toast.makeText(this@LoginActivity,
                     "Preencha o email!",
                     Toast.LENGTH_SHORT).show()
 
@@ -77,7 +76,7 @@ class LoginActivityKt : AppCompatActivity() {
 
                         //Verificar o tipo de usuário logado
                         // "Motorista" / "Passageiro"
-                        UsuarioFirebase.redirecionaUsuarioLogado(this@LoginActivityKt)
+                        UsuarioFirebase.redirecionaUsuarioLogado(this@LoginActivity)
 
                     } else {
 
@@ -102,7 +101,7 @@ class LoginActivityKt : AppCompatActivity() {
 
                         }
 
-                        Toast.makeText(this@LoginActivityKt,
+                        Toast.makeText(this@LoginActivity,
                                 excecao, Toast.LENGTH_SHORT).show()
 
                     }

@@ -3,10 +3,8 @@ package com.example.uber.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.uber.R;
-import com.example.uber.config.ConfiguracaoFirebase;
 import com.example.uber.helper.Permissoes;
 import com.example.uber.helper.UsuarioFirebase;
-import com.google.firebase.auth.FirebaseAuth;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -37,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   public void abrirTelaLogin(View view) {
-    startActivity( new Intent(this, LoginActivityKt.class));
+    startActivity( new Intent(this, LoginActivity.class));
   }
 
   public void abrirTelaCadastro(View view) {
