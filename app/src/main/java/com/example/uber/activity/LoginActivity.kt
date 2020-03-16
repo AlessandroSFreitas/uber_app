@@ -27,8 +27,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         //Inicializar componentes
-        campoEmail = findViewById(R.id.editLoginEmail)
-        campoSenha = findViewById(R.id.editLoginSenha)
+        inicializarComponentes()
 
     }
 
@@ -108,6 +107,13 @@ class LoginActivity : AppCompatActivity() {
                     }
 
                 }
+
+    }
+
+    fun inicializarComponentes() {
+
+        campoEmail = findViewById(R.id.editLoginEmail)
+        campoSenha = findViewById(R.id.editLoginSenha)
 
     }
 
